@@ -1,18 +1,25 @@
 <template>
 	<div class="game-container">
-	  <canvas ref="canvas" @mousedown="startDrag" @mousemove="dragIcon" @mouseup="stopDrag" @mouseleave="stopDrag"></canvas>
+	  <canvas 
+		ref="canvas" 
+		@mousedown="startDrag" 
+		@mousemove="dragIcon" 
+		@mouseup="stopDrag" 
+		@mouseleave="stopDrag"
+		@touchstart="startDrag" 
+		@touchmove="dragIcon" 
+		@touchend="stopDrag"
+	  ></canvas>
 	</div>
   </template>
   
-  <script setup>
-  import { ref, onMounted, onBeforeUnmount } from "vue";
-  
+  <script setup>  
   const canvas = ref(null);
   const ctx = ref(null);
   const icons = ref([]);
   const iconImages = ["images/icon1.png", "images/icon2.png", "images/icon3.png", "images/icon4.png"];
   const matchedPairs = ref(0);
-  const totalPairs = 4; // 画面に配置するペアの数
+  const totalPairs = 4;
   let allIconsLoaded = ref(false);
   let draggingIcon = ref(null);
   let isDragging = ref(false);
@@ -27,7 +34,6 @@
 	  const icon = iconImages[i % iconImages.length];
 	  tempIcons.push({ image: icon, x: Math.random() * 700, y: Math.random() * 500, width: 100, height: 100, img: new Image() });
 	  tempIcons.push({ image: icon, x: Math.random() * 700, y: Math.random() * 500, width: 100, height: 100, img: new Image() });
-
 	}
   
 	tempIcons.forEach(icon => {
@@ -53,10 +59,23 @@
 	}
   };
   
-  const startDrag = (event) => {
+  const getEventPosition = (event) => {
 	const rect = canvas.value.getBoundingClientRect();
-	const x = event.clientX - rect.left;
-	const y = event.clientY - rect.top;
+	let x, y;
+	if (event.touches) {
+	  x = event.touches[0].clientX - rect.left;
+	  y = event.touches[0].clientY - rect.top;
+	} else {
+	  x = event.clientX - rect.left;
+	  y = event.clientY - rect.top;
+	}
+	return { x, y };
+  };
+  
+  const startDrag = (event) => {
+	event.preventDefault(); // スクロールを防止
+  
+	const { x, y } = getEventPosition(event);
 	
 	draggingIcon.value = icons.value.find(icon =>
 	  x >= icon.x && x <= icon.x + icon.width &&
@@ -68,10 +87,12 @@
   };
   
   const dragIcon = (event) => {
+	event.preventDefault();
+  
 	if (isDragging.value && draggingIcon.value) {
-	  const rect = canvas.value.getBoundingClientRect();
-	  draggingIcon.value.x = event.clientX - rect.left - draggingIcon.value.width / 2;
-	  draggingIcon.value.y = event.clientY - rect.top - draggingIcon.value.height / 2;
+	  const { x, y } = getEventPosition(event);
+	  draggingIcon.value.x = x - draggingIcon.value.width / 2;
+	  draggingIcon.value.y = y - draggingIcon.value.height / 2;
 	  drawIcons();
 	  checkCollision();
 	}
@@ -89,7 +110,7 @@
 		const dy = icon.y - draggingIcon.value.y;
 		const distance = Math.sqrt(dx * dx + dy * dy);
   
-		if (distance < 10) { // 接触判定
+		if (distance < 10) {
 		  playSound();
 		  icons.value = icons.value.filter(i => i !== icon && i !== draggingIcon.value);
 		  matchedPairs.value++;
@@ -107,7 +128,7 @@
   };
   
   const playSound = () => {
-	const audio = new Audio("sounds/match.mp3"); // マッチ時の音
+	const audio = new Audio("sounds/match.mp3");
 	audio.play();
   };
   
@@ -121,14 +142,4 @@
   });
   </script>
   
-  <!-- <style>
-  .game-container {
-	width: 100%;
-	height: 100vh;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	background-color: #f0f0f0;
-  }
-  </style>
-   -->
+  
