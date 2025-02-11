@@ -25,7 +25,7 @@
   let draggingIcon = ref(null);
   let isDragging = ref(false);
 
-  const size = 100;
+  const iconSize = 150;
   
   const loadIcons = () => {
 	icons.value = [];
@@ -35,21 +35,21 @@
   
 	for (let i = 0; i < totalPairs; i++) {
 	  const icon = iconImages[i % iconImages.length];
-	  const margin = size;
+	  const margin = iconSize;
 	  tempIcons.push({ 
 		image: icon, 
-		x: margin + Math.random() * (canvas.value.width - size - margin * 2), 
-		y: margin + Math.random() * (canvas.value.height - size - margin * 2), 
-		width: size, 
-		height: size, 
+		x: Math.random() * (canvas.value.width - iconSize), 
+		y: Math.random() * (canvas.value.height - iconSize), 
+		width: iconSize, 
+		height: iconSize, 
 		img: new Image() 
 	  });
 	  tempIcons.push({ 
 		image: icon, 
-		x: margin + Math.random() * (canvas.value.width - size - margin * 2), 
-		y: margin + Math.random() * (canvas.value.height - size - margin * 2), 
-		width: size, 
-		height: size, 
+		x: Math.random() * (canvas.value.width - iconSize), 
+		y: Math.random() * (canvas.value.height - iconSize), 
+		width: iconSize, 
+		height: iconSize, 
 		img: new Image() 
 	  });
 	}
@@ -165,15 +165,13 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	min-height: 100vh;
+	height: 100vh;
 	padding: 1rem;
   }
   
   .game-canvas {
 	max-width: 100%;
-	max-height: 100vh;
+	height: 100%;
 	object-fit: contain;
   }
   </style>
-  
-  
