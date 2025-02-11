@@ -1,5 +1,5 @@
 <template>
-	<div class="game-container">
+	<div class="container">
 	  <canvas 
 		ref="canvas" 
 		@mousedown="startDrag" 
@@ -9,6 +9,7 @@
 		@touchstart="startDrag" 
 		@touchmove="dragIcon" 
 		@touchend="stopDrag"
+		class="game-canvas"
 	  ></canvas>
 	</div>
   </template>
@@ -23,6 +24,8 @@
   let allIconsLoaded = ref(false);
   let draggingIcon = ref(null);
   let isDragging = ref(false);
+
+  const size = 100;
   
   const loadIcons = () => {
 	icons.value = [];
@@ -32,8 +35,23 @@
   
 	for (let i = 0; i < totalPairs; i++) {
 	  const icon = iconImages[i % iconImages.length];
-	  tempIcons.push({ image: icon, x: Math.random() * 700, y: Math.random() * 500, width: 100, height: 100, img: new Image() });
-	  tempIcons.push({ image: icon, x: Math.random() * 700, y: Math.random() * 500, width: 100, height: 100, img: new Image() });
+	  const margin = size;
+	  tempIcons.push({ 
+		image: icon, 
+		x: margin + Math.random() * (canvas.value.width - size - margin * 2), 
+		y: margin + Math.random() * (canvas.value.height - size - margin * 2), 
+		width: size, 
+		height: size, 
+		img: new Image() 
+	  });
+	  tempIcons.push({ 
+		image: icon, 
+		x: margin + Math.random() * (canvas.value.width - size - margin * 2), 
+		y: margin + Math.random() * (canvas.value.height - size - margin * 2), 
+		width: size, 
+		height: size, 
+		img: new Image() 
+	  });
 	}
   
 	tempIcons.forEach(icon => {
@@ -91,8 +109,8 @@
   
 	if (isDragging.value && draggingIcon.value) {
 	  const { x, y } = getEventPosition(event);
-	  draggingIcon.value.x = x - draggingIcon.value.width / 2;
-	  draggingIcon.value.y = y - draggingIcon.value.height / 2;
+	  draggingIcon.value.x = Math.max(0, Math.min(x - draggingIcon.value.width / 2, canvas.value.width - draggingIcon.value.width));
+	  draggingIcon.value.y = Math.max(0, Math.min(y - draggingIcon.value.height / 2, canvas.value.height - draggingIcon.value.height));
 	  drawIcons();
 	  checkCollision();
 	}
@@ -141,5 +159,21 @@
 	}
   });
   </script>
+  
+  <style scoped>
+  .container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 100vh;
+	padding: 1rem;
+  }
+  
+  .game-canvas {
+	max-width: 100%;
+	max-height: 100vh;
+	object-fit: contain;
+  }
+  </style>
   
   
