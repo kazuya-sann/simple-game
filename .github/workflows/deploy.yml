@@ -35,5 +35,5 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages # `gh-pages` ブランチをデプロイ用に指定
-          folder: dist # `npm run generate` で生成されるフォルダ
+          folder: .output/public # Nuxt 3 のデフォルト出力ディレクトリ
           clean: true # `gh-pages` ブランチの内容を更新
