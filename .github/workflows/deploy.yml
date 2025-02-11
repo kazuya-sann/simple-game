@@ -3,7 +3,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main  # mainブランチにpushされたら実行
+      - main # mainブランチにpushされたら実行
 
 permissions:
   contents: write
@@ -28,9 +28,12 @@ jobs:
       - name: Nuxt 3 の静的サイト生成
         run: npm run generate
 
+      - name: distフォルダの中身を確認
+        run: ls -la dist
+
       - name: distをgh-pagesにデプロイ
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          branch: gh-pages  # `gh-pages` ブランチをデプロイ用に指定
-          folder: dist  # `npm run generate` で生成されるフォルダ
-          clean: true  # `gh-pages` ブランチの内容を更新
+          branch: gh-pages # `gh-pages` ブランチをデプロイ用に指定
+          folder: dist # `npm run generate` で生成されるフォルダ
+          clean: true # `gh-pages` ブランチの内容を更新
