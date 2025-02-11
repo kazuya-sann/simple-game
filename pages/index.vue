@@ -79,13 +79,16 @@
   
   const getEventPosition = (event) => {
 	const rect = canvas.value.getBoundingClientRect();
+	const scaleX = canvas.value.width / rect.width;
+	const scaleY = canvas.value.height / rect.height;
+  
 	let x, y;
 	if (event.touches) {
-	  x = event.touches[0].clientX - rect.left;
-	  y = event.touches[0].clientY - rect.top;
+	  x = (event.touches[0].clientX - rect.left) * scaleX;
+	  y = (event.touches[0].clientY - rect.top) * scaleY;
 	} else {
-	  x = event.clientX - rect.left;
-	  y = event.clientY - rect.top;
+	  x = (event.clientX - rect.left) * scaleX;
+	  y = (event.clientY - rect.top) * scaleY;
 	}
 	return { x, y };
   };
@@ -167,11 +170,14 @@
 	align-items: center;
 	height: 100vh;
 	padding: 1rem;
+	overflow: hidden;
   }
   
   .game-canvas {
 	max-width: 100%;
-	height: 100%;
+	max-height: 100%;
+	width: auto;
+	height: auto;
 	object-fit: contain;
   }
   </style>
