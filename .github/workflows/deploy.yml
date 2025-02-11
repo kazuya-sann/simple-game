@@ -36,4 +36,3 @@ jobs:
         with:
           branch: gh-pages # `gh-pages` ブランチをデプロイ用に指定
           folder: .output/public # Nuxt 3 のデフォルト出力ディレクトリ
-          clean: true # `gh-pages` ブランチの内容を更新
